@@ -1,7 +1,8 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.exceptions.FilmAlreadyExistException;
 import ru.yandex.practicum.filmorate.exceptions.FilmNotExistException;
 import ru.yandex.practicum.filmorate.exceptions.InputDataErrorException;
@@ -21,21 +22,20 @@ public class FilmControllerImpl implements FilmController {
     private final Map<Integer, Film> films = new HashMap<>();
 
     @Override
-    @GetMapping("/films")
     public List<Film> getFilms() {
         return new ArrayList<>(films.values());
     }
 
     @Override
-    @PostMapping("/films")
     public Film createFilm(@RequestBody Film film) {
-        if (films.containsKey(film.getId())) {
-            throw new FilmAlreadyExistException("The film is already included in the database");
 
-        } else if (Validator.isValidDate(film) || Validator.isValidTitle(film)
+        if (Validator.isValidDate(film) || Validator.isValidTitle(film)
                 || Validator.isValidDescription(film) || Validator.isValidDuration(film)) {
 
             throw new InputDataErrorException("Release date - no earlier than December 28, 1895");
+        } else if (films.containsKey(film.getId())) {
+            throw new FilmAlreadyExistException("The film is already included in the database");
+
         } else {
             id++;
             film.setId(id);
@@ -46,7 +46,6 @@ public class FilmControllerImpl implements FilmController {
     }
 
     @Override
-    @PutMapping("/films")
     public Film updateFilm(@RequestBody Film film) {
         if (!films.containsKey(film.getId())) {
             throw new FilmNotExistException("There is no such film in the database");
