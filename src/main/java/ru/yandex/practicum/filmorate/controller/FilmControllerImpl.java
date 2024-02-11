@@ -1,7 +1,9 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.exceptions.FilmAlreadyExistException;
 import ru.yandex.practicum.filmorate.exceptions.FilmNotExistException;
@@ -26,6 +28,7 @@ public class FilmControllerImpl implements FilmController {
         return new ArrayList<>(films.values());
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @Override
     public Film createFilm(@RequestBody Film film) {
 
