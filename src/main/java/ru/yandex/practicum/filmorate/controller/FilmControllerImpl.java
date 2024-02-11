@@ -7,7 +7,7 @@ import ru.yandex.practicum.filmorate.exceptions.FilmAlreadyExistException;
 import ru.yandex.practicum.filmorate.exceptions.FilmNotExistException;
 import ru.yandex.practicum.filmorate.exceptions.InputDataErrorException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.utility.Validator;
+import ru.yandex.practicum.filmorate.utility.FilmValidator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,8 +29,8 @@ public class FilmControllerImpl implements FilmController {
     @Override
     public Film createFilm(@RequestBody Film film) {
 
-        if (Validator.isValidDate(film) || Validator.isValidTitle(film)
-                || Validator.isValidDescription(film) || Validator.isValidDuration(film)) {
+        if (FilmValidator.isValidDate(film) || FilmValidator.isValidTitle(film)
+                || FilmValidator.isValidDescription(film) || FilmValidator.isValidDuration(film)) {
 
             throw new InputDataErrorException("Release date - no earlier than December 28, 1895");
         } else if (films.containsKey(film.getId())) {

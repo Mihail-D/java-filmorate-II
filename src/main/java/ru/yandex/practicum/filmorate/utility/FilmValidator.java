@@ -8,7 +8,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import java.time.LocalDate;
 
 @UtilityClass
-public class Validator {
+public class FilmValidator {
 
     public boolean isValidDate(Film film) {
         LocalDate earliestDate = LocalDate.of(1895, 12, 28);
@@ -41,6 +41,4 @@ public class Validator {
         }
         return false;
     }
-
-
 }
