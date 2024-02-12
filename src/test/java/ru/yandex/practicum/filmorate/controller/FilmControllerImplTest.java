@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.yandex.practicum.filmorate.exceptions.FilmNotExistException;
 import ru.yandex.practicum.filmorate.exceptions.InputDataErrorException;
 import ru.yandex.practicum.filmorate.model.Film;
 
@@ -26,7 +27,6 @@ class FilmControllerImplTest {
         filmController = new FilmControllerImpl();
         film1 = Mockito.mock(Film.class);
         film2 = Mockito.mock(Film.class);
-
         when(film1.getId()).thenReturn(1);
         when(film1.getName()).thenReturn("Film 1 Title");
         when(film1.getDescription()).thenReturn("Film 1 Description");
@@ -212,4 +212,17 @@ class FilmControllerImplTest {
 
         assertEquals(film1, actualFilm);
     }
+
+    @Test
+    void updateFilmNotInDatabase() {
+        Film film = new Film();
+        film.setId(100);
+        film.setName("Test Film");
+        film.setDescription("Test Description");
+        film.setDuration(120);
+        film.setReleaseDate(LocalDate.of(2020, 1, 1));
+
+        assertThrows(FilmNotExistException.class, () -> filmController.updateFilm(film));
+    }
+
 }

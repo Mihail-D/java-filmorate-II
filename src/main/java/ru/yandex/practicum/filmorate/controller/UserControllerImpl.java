@@ -5,8 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import ru.yandex.practicum.filmorate.exceptions.InputDataErrorException;
-import ru.yandex.practicum.filmorate.exceptions.UserAlreadyExistsException;
 import ru.yandex.practicum.filmorate.exceptions.UserNotExistException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.utility.UserValidator;
@@ -31,11 +29,9 @@ public class UserControllerImpl implements UserController {
     @ResponseStatus(HttpStatus.CREATED)
     @Override
     public User createUser(@RequestBody User user) {
-        if (UserValidator.isMailEmpty(user) || UserValidator.isLoginEmpty(user) || UserValidator.isBirthdayValid(user)) {
-            throw new InputDataErrorException("The mail field is filled in with errors");
-        } else if (users.containsKey(user.getId())) {
-            throw new UserAlreadyExistsException("The user is already included in the database");
-        } else if (user.getName() == null || user.getName().isEmpty()) {
+        UserValidator.validateUserForCreation(user, users);
+
+        if (user.getName() == null || user.getName().isEmpty()) {
             user.setName(user.getLogin());
         }
 
