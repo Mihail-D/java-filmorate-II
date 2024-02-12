@@ -24,8 +24,6 @@ public class UserValidator {
         }
     }
 
-
-
     public void isLoginEmpty(User user) {
         if (user.getLogin().isBlank()) {
             throw new InputDataErrorException("Login must not be empty");

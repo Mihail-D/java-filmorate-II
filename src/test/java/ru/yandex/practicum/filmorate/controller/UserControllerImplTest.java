@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.controller;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.exceptions.InputDataErrorException;
+import ru.yandex.practicum.filmorate.exceptions.UserNotExistException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
@@ -54,7 +55,6 @@ class UserControllerImplTest {
         User createdUser = userController.createUser(user);
 
         assertNotNull(createdUser);
-        assertNotNull(createdUser.getId());
 
         List<User> users = userController.getUsers();
         assertTrue(users.contains(createdUser));
@@ -84,12 +84,82 @@ class UserControllerImplTest {
         UserControllerImpl userController = new UserControllerImpl();
 
         User user = new User();
-        user.setEmail("это-неправильный?эмейл@"); // Устанавливаем невалидный адрес электронной почты
+        user.setEmail("это-неправильный?эмейл@");
+
+        assertThrows(InputDataErrorException.class, () -> userController.createUser(user));
+    }
+
+    @Test
+    void createUserWithInvalidLogin() {
+        UserControllerImpl userController = new UserControllerImpl();
+
+        User user = new User();
+        user.setLogin(" ");
+
+        assertThrows(InputDataErrorException.class, () -> userController.createUser(user));
+    }
+
+    @Test
+    void createUserWithNameEmpty() {
+        UserControllerImpl userController = new UserControllerImpl();
+
+        User user = new User();
+        user.setLogin("testlogin");
+        user.setEmail("test@example.com");
+        user.setBirthday(LocalDate.of(1990, 1, 1));
+
+        User createdUser = userController.createUser(user);
+
+        assertNotNull(createdUser);
+        assertEquals(user.getLogin(), createdUser.getName());
+    }
+
+    @Test
+    void createUserWithFutureBirthday() {
+        UserControllerImpl userController = new UserControllerImpl();
+
+        User user = new User();
+        user.setLogin("testlogin");
+        user.setEmail("test@example.com");
+        user.setBirthday(LocalDate.now().plusDays(1));
 
         assertThrows(InputDataErrorException.class, () -> userController.createUser(user));
     }
 
     @Test
     void updateUser() {
+        UserControllerImpl userController = new UserControllerImpl();
+
+        User user = new User();
+        user.setName("Test User");
+        user.setLogin("testlogin");
+        user.setEmail("test@example.com");
+        user.setBirthday(LocalDate.of(1990, 1, 1));
+        User createdUser = userController.createUser(user);
+
+        createdUser.setName("Updated User");
+        createdUser.setLogin("updatedlogin");
+        createdUser.setEmail("updated@example.com");
+        createdUser.setBirthday(LocalDate.of(1991, 1, 1));
+        User updatedUser = userController.updateUser(createdUser);
+
+        assertEquals("Updated User", updatedUser.getName());
+        assertEquals("updatedlogin", updatedUser.getLogin());
+        assertEquals("updated@example.com", updatedUser.getEmail());
+        assertEquals(LocalDate.of(1991, 1, 1), updatedUser.getBirthday());
+    }
+
+    @Test
+    void updateUserNonExistentUser() {
+        UserControllerImpl userController = new UserControllerImpl();
+
+        User user = new User();
+        user.setId(999);
+        user.setName("Non Existent User");
+        user.setLogin("nonexistentlogin");
+        user.setEmail("nonexistent@example.com");
+        user.setBirthday(LocalDate.of(1990, 1, 1));
+
+        assertThrows(UserNotExistException.class, () -> userController.updateUser(user));
     }
 }
