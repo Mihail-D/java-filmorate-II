@@ -35,6 +35,10 @@ public class FilmControllerImpl implements FilmController {
             film.setId(id);
             films.put(film.getId(), film);
         }
+
+        log.info("Создан фильм " + film.getName());
+        log.info("В списке фильмов " + films.size() + " человек");
+
         return film;
     }
 
@@ -45,6 +49,8 @@ public class FilmControllerImpl implements FilmController {
         } else {
             films.put(film.getId(), film);
         }
+
+        log.info("Фильм " + film.getName() + " изменен");
 
         return film;
     }

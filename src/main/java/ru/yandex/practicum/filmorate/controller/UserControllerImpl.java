@@ -40,6 +40,9 @@ public class UserControllerImpl implements UserController {
         user.setId(id);
         users.put(id, user);
 
+        log.info("Создан пользователь " + user.getName());
+        log.info("В списке пользователей " + users.size() + " человек");
+
         return user;
     }
 
@@ -50,6 +53,9 @@ public class UserControllerImpl implements UserController {
         } else {
             users.put(user.getId(), user);
         }
+
+        log.info("Пользователь " + user.getName() + " изменен");
+
         return user;
     }
 }
