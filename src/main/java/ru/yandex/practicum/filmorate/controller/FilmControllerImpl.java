@@ -30,7 +30,7 @@ public class FilmControllerImpl implements FilmController {
     @ResponseStatus(HttpStatus.CREATED)
     @Override
     public Film createFilm(@Valid @RequestBody Film film) {
-        if (!FilmValidator.validateFilm(film)) {
+        if (FilmValidator.validateFilm(film)) {
             id++;
             film.setId(id);
             films.put(film.getId(), film);

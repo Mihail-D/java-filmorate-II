@@ -32,7 +32,7 @@ public class FilmValidator {
     }
 
     public boolean isFilmNull(Film film) {
-        return film != null;
+        return film == null;
     }
 
     public boolean isValidDuration(Film film) {
@@ -43,11 +43,9 @@ public class FilmValidator {
     }
 
     public boolean validateFilm(Film film) {
-        if (!isFilmNull(film)) {
+
+        if (isFilmNull(film)) {
             throw new InputDataErrorException("Film object cannot be null");
-        }
-        if (film.getId() == 0) {
-            throw new InputDataErrorException("Film ID cannot be null or zero");
         }
         if (!isValidDate(film)) {
             throw new InputDataErrorException("Release date - no earlier than December 28, 1895");
@@ -61,6 +59,7 @@ public class FilmValidator {
         if (!isValidDuration(film)) {
             throw new InputDataErrorException("Movie duration cannot be negative");
         }
-        return false;
+
+        return true;
     }
 }

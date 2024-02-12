@@ -162,7 +162,7 @@ class FilmControllerImplTest {
         film.setId(1);
         film.setName("Test Film");
         film.setDescription("Test Description");
-        film.setDuration(-1); // Set duration to -1
+        film.setDuration(-1);
         film.setReleaseDate(LocalDate.of(2020, 1, 1));
 
         assertThrows(InputDataErrorException.class, () -> filmController.createFilm(film));
@@ -174,7 +174,7 @@ class FilmControllerImplTest {
         film.setId(1);
         film.setName("Test Film");
         film.setDescription("Test Description");
-        film.setDuration(0); // Set duration to 0
+        film.setDuration(0);
         film.setReleaseDate(LocalDate.of(2020, 1, 1));
 
         assertThrows(InputDataErrorException.class, () -> filmController.createFilm(film));
@@ -186,21 +186,10 @@ class FilmControllerImplTest {
         film.setId(1);
         film.setName("Test Film");
         film.setDescription("Test Description");
-        film.setDuration(1); // Set duration to 1
+        film.setDuration(1);
         film.setReleaseDate(LocalDate.of(2020, 1, 1));
 
         assertDoesNotThrow(() -> filmController.createFilm(film));
-    }
-
-    @Test
-    void createFilmWithNullId() {
-        Film film = new Film();
-        film.setName("Test Film");
-        film.setDescription("Test Description");
-        film.setDuration(120);
-        film.setReleaseDate(LocalDate.of(2020, 1, 1));
-
-        assertThrows(InputDataErrorException.class, () -> filmController.createFilm(film));
     }
 
     @Test
