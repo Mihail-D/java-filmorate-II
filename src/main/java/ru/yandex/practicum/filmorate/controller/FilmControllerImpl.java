@@ -31,19 +31,31 @@ public class FilmControllerImpl implements FilmController {
     @ResponseStatus(HttpStatus.CREATED)
     @Override
     public Film createFilm(@RequestBody Film film) {
-
-        if (FilmValidator.isValidDate(film) || FilmValidator.isValidTitle(film)
-                || FilmValidator.isValidDescription(film) || FilmValidator.isValidDuration(film)) {
-
-            throw new InputDataErrorException("Release date - no earlier than December 28, 1895");
-        } else if (films.containsKey(film.getId())) {
-            throw new FilmAlreadyExistException("The film is already included in the database");
-
-        } else {
-            id++;
-            film.setId(id);
-            films.put(film.getId(), film);
+        if (!FilmValidator.isFilmNull(film)) {
+            throw new InputDataErrorException("Film object cannot be null");
         }
+        if (film.getId() == 0) {
+            throw new InputDataErrorException("Film ID cannot be null or zero");
+        }
+        if (!FilmValidator.isValidDate(film)) {
+            throw new InputDataErrorException("Release date - no earlier than December 28, 1895");
+        }
+        if (!FilmValidator.isValidTitle(film)) {
+            throw new InputDataErrorException("Film name cannot be empty");
+        }
+        if (!FilmValidator.isValidDescription(film)) {
+            throw new InputDataErrorException("Description length exceeds 200 characters");
+        }
+        if (!FilmValidator.isValidDuration(film)) {
+            throw new InputDataErrorException("Movie duration cannot be negative");
+        }
+        if (films.containsKey(film.getId())) {
+            throw new FilmAlreadyExistException("The film is already included in the database");
+        }
+
+        id++;
+        film.setId(id);
+        films.put(film.getId(), film);
 
         return film;
     }
