@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.exceptions.FilmNotExistException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.utility.FilmValidator;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +29,7 @@ public class FilmControllerImpl implements FilmController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @Override
-    public Film createFilm(@RequestBody Film film) {
+    public Film createFilm(@Valid @RequestBody Film film) {
         if (!FilmValidator.validateFilm(film)) {
             id++;
             film.setId(id);
@@ -38,7 +39,7 @@ public class FilmControllerImpl implements FilmController {
     }
 
     @Override
-    public Film updateFilm(@RequestBody Film film) {
+    public Film updateFilm(@Valid @RequestBody Film film) {
         if (!films.containsKey(film.getId())) {
             throw new FilmNotExistException("There is no such film in the database");
         } else {

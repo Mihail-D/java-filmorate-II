@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.exceptions.UserNotExistException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.utility.UserValidator;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +29,7 @@ public class UserControllerImpl implements UserController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @Override
-    public User createUser(@RequestBody User user) {
+    public User createUser(@Valid @RequestBody User user) {
         UserValidator.validateUserForCreation(user, users);
 
         if (user.getName() == null || user.getName().isEmpty()) {
@@ -43,7 +44,7 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public User updateUser(@RequestBody User user) {
+    public User updateUser(@Valid @RequestBody User user) {
         if (!users.containsKey(user.getId())) {
             throw new UserNotExistException("There is no such user in the database");
         } else {
