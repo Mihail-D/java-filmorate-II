@@ -11,12 +11,9 @@ import java.util.List;
 @Controller
 public interface FilmStorage {
 
-    @GetMapping("/films")
     List<Film> getFilms();
 
-    @PostMapping("/films")
     Film createFilm(Film film);
 
-    @PutMapping("/films")
     Film updateFilm(Film film);
 }
