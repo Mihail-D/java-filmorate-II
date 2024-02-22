@@ -12,6 +12,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@RequestMapping("/users")
 public class UserController {
 
     UserStorage userStorage;
@@ -21,19 +22,20 @@ public class UserController {
         this.userStorage = userStorage;
     }
 
-    @GetMapping("/users")
+    @GetMapping()
     public List<User> getUsers() {
         return userStorage.getUsers();
     }
 
-    @PostMapping("/users")
+    @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public User createUser(@Valid @RequestBody User user) {
         return userStorage.createUser(user);
     }
 
-    @PutMapping("/users")
+    @PutMapping()
     public User updateUser(@Valid @RequestBody User user) {
         return userStorage.updateUser(user);
     }
+
 }

@@ -13,6 +13,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@RequestMapping("/films")
 public class FilmController {
 
     FilmStorage filmStorage;
@@ -22,18 +23,18 @@ public class FilmController {
         this.filmStorage = filmStorage;
     }
 
-    @GetMapping("/films")
+    @GetMapping()
     public List<Film> getFilms() {
         return filmStorage.getFilms();
     }
 
-    @PostMapping("/films")
+    @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public Film createFilm(@Valid @RequestBody Film film) {
         return filmStorage.createFilm(film);
     }
 
-    @PutMapping("/films")
+    @PutMapping()
     public Film updateFilm(@Valid @RequestBody Film film) {
         return filmStorage.updateFilm(film);
     }
