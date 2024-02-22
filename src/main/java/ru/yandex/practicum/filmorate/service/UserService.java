@@ -7,12 +7,14 @@ import ru.yandex.practicum.filmorate.exceptions.UserNotExistException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 @Slf4j
 @Service
 public class UserService {
+
     UserStorage userStorage;
 
     @Autowired
@@ -20,8 +22,12 @@ public class UserService {
         this.userStorage = userStorage;
     }
 
+    public List<User> getUsers() {
+        return userStorage.getUsers();
+    }
+
     public User getUserById(long id) {
-        List<User> users = userStorage.getUsers();
+        List<User> users = getUsers();
         for (User user : users) {
             if (user.getId() == id) {
                 return user;
@@ -30,27 +36,52 @@ public class UserService {
         throw new UserNotExistException("User with id " + id + " not found");
     }
 
+    private void addFriendToUser(User user, long friendId) {
+        user.getFriends().add(friendId);
+        userStorage.updateUser(user);
+    }
+
     public User addFriend(long friendOneId, long friendTwoId) {
         User friendOne = getUserById(friendOneId);
         User friendTwo = getUserById(friendTwoId);
 
-        Set<User> friendsSetOne = friendOne.getFriends();
-        Set<User> friendsSetTwo = friendTwo.getFriends();
-
-        friendsSetOne.add(getUserById(friendTwoId));
-        friendsSetTwo.add(getUserById(friendOneId));
-
-        log.info("friendOne длина списка друзей " + friendsSetOne.size());
-        log.info("friendTwo длина списка друзей " + friendsSetTwo.size());
-
-        userStorage.updateUser(friendOne);
-        userStorage.updateUser(friendTwo);
+        addFriendToUser(friendOne, friendTwoId);
+        addFriendToUser(friendTwo, friendOneId);
 
         return friendOne;
     }
+
+    public List<User> getUserFriends(long id) {
+        List<User> users = getUsers();
+        Set<Long> friendsId = getUserById(id).getFriends();
+        List<User> userFriends = new ArrayList<>();
+
+        for (User i : users) {
+            if (friendsId.contains(i.getId())) {
+                userFriends.add(i);
+            }
+        }
+
+        return userFriends;
+    }
+
+    private void removeFriendFromUser(User user, long friendId) {
+        user.getFriends().remove(friendId);
+        userStorage.updateUser(user);
+    }
+
+    public void removeFriend(long friendOneId, long friendTwoId) {
+        User friendOne = getUserById(friendOneId);
+        User friendTwo = getUserById(friendTwoId);
+
+        removeFriendFromUser(friendOne, friendTwoId);
+        removeFriendFromUser(friendTwo, friendOneId);
+    }
+
+
 }
 // *** GET .../users/{id}
-// PUT /users/{id}/friends/{friendId}
-// DELETE /users/{id}/friends/{friendId}
-// GET /users/{id}/friends                  список пользователей, являющихся его друзьями
+// *** PUT /users/{id}/friends/{friendId}
+// *** DELETE /users/{id}/friends/{friendId}
+// *** GET /users/{id}/friends                  список пользователей, являющихся его друзьями
 // GET /users/{id}/friends/common/{otherId} список друзей, общих с другим пользователем

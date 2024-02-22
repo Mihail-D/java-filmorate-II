@@ -10,7 +10,6 @@ import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Set;
 
 @Slf4j
 @RestController
@@ -53,7 +52,12 @@ public class UserController {
     }
 
     @GetMapping("/{id}/friends")
-    public Set<User> getUserFriends(@PathVariable long id) {
-        return userService.getUserById(id).getFriends();
+    public List<User> getUserFriends(@PathVariable long id) {
+        return userService.getUserFriends(id);
+    }
+
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public void removeFriend(@PathVariable long id, @PathVariable long friendId) {
+        userService.removeFriend(id, friendId);
     }
 }
