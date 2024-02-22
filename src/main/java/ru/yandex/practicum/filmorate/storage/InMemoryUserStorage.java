@@ -46,11 +46,17 @@ public class InMemoryUserStorage implements UserStorage {
         if (!users.containsKey(user.getId())) {
             throw new UserNotExistException("There is no such user in the database");
         } else {
-            users.put(user.getId(), user);
+            User existingUser = users.get(user.getId());
+            existingUser.setName(user.getName());
+            existingUser.setEmail(user.getEmail());
+            existingUser.setBirthday(user.getBirthday());
+            existingUser.setLogin(user.getLogin());
+
+            users.put(user.getId(), existingUser);
         }
 
         log.info("Пользователь " + user.getName() + " изменен");
 
-        return user;
+        return users.get(user.getId());
     }
 }

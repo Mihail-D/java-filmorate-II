@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
@@ -11,9 +12,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class User {
 
-    private final Set<Long> friends = new HashSet<>();
+    private final Set<User> friends = new HashSet<>();
     long id;
 
     @Email
