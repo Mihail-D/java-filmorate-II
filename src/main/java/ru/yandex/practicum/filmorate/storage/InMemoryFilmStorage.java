@@ -32,7 +32,7 @@ public class InMemoryFilmStorage implements FilmStorage{
         }
 
         log.info("Создан фильм " + film.getName());
-        log.info("В списке фильмов " + films.size() + " человек");
+        log.info("В списке фильмов " + films.size() + " единиц");
 
         return film;
     }
