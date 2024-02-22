@@ -38,7 +38,7 @@ public class UserValidator {
 
     }
 
-    public void validateUserForCreation(User user, Map<Integer, User> users) {
+    public void validateUserForCreation(User user, Map<Long, User> users) {
         isMailEmpty(user);
         isMailPatternValid(user);
         isLoginEmpty(user);

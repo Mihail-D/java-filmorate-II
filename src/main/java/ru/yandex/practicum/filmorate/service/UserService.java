@@ -19,7 +19,7 @@ public class UserService {
         this.userStorage = userStorage;
     }
 
-    public User getUserById(int id) {
+    public User getUserById(long id) {
         List<User> users = userStorage.getUsers();
         for (User user : users) {
             if (user.getId() == id) {
@@ -29,7 +29,7 @@ public class UserService {
         throw new UserNotExistException("User with id " + id + " not found");
     }
 }
-// GET .../users/{id}
+// *** GET .../users/{id}
 // PUT /users/{id}/friends/{friendId}
 // DELETE /users/{id}/friends/{friendId}
 // GET /users/{id}/friends                  список пользователей, являющихся его друзьями
