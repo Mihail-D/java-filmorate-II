@@ -55,4 +55,12 @@ public class FilmController {
     public Film deleteLike(@PathVariable long id, @PathVariable long userId) {
         return filmService.deleteLike(id, userId);
     }
+
+    @GetMapping("/popular")
+    public List<Film> getPopularFilms(@RequestParam(required = false) Integer count) {
+        if (count == null) {
+            count = -1;
+        }
+        return filmService.getPopularFilms(count);
+    }
 }

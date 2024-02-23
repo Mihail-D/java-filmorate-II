@@ -9,7 +9,10 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -47,8 +50,7 @@ public class FilmService {
 
         if (user != null) {
             filmLikes.removeIf(i -> i == userId);
-        }
-        else {
+        } else {
             throw new UserNotExistException("User not found");
         }
 
@@ -56,8 +58,15 @@ public class FilmService {
 
         return film;
     }
-}
 
-// *** PUT     /{id}/like/{userId}
-// *** DELETE  /{id}/like/{userId}
-// GET     /popular?count={count}  список из первых count фильмов по количеству лайков или первые 10
+    public List<Film> getPopularFilms(int count) {
+        List<Film> films = filmStorage.getFilms();
+        films.sort(Comparator.comparingInt((Film film) -> film.getLikes().size()).reversed());
+
+        if (count < 0) {
+            count = 10;
+        }
+
+        return films.stream().limit(count).collect(Collectors.toList());
+    }
+}
