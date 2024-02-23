@@ -13,10 +13,10 @@ import java.util.Map;
 
 @Slf4j
 @Component
-public class InMemoryFilmStorage implements FilmStorage{
+public class InMemoryFilmStorage implements FilmStorage {
+
     private long id = 0;
     private final Map<Long, Film> films = new HashMap<>();
-
 
     @Override
     public List<Film> getFilms() {
@@ -48,5 +48,13 @@ public class InMemoryFilmStorage implements FilmStorage{
         log.info("Фильм " + film.getName() + " изменен");
 
         return film;
+    }
+
+    @Override
+    public Film getFilmById(long id) {
+        if (!films.containsKey(id)) {
+            throw new FilmNotExistException("There is no such film in the database");
+        }
+        return films.get(id);
     }
 }
