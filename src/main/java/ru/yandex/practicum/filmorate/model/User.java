@@ -12,10 +12,9 @@ import java.util.Set;
 
 @Getter
 @Setter
-
 public class User {
 
-    private final Set<Long> friends = new HashSet<>();
+    private Set<Long> friends = new HashSet<>();
     long id;
 
     @Email

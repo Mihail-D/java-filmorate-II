@@ -35,9 +35,6 @@ public class InMemoryUserStorage implements UserStorage {
         user.setId(id);
         users.put(id, user);
 
-        log.info("Создан пользователь " + user.getName());
-        log.info("В списке пользователей " + users.size() + " человек");
-
         return user;
     }
 
@@ -51,12 +48,16 @@ public class InMemoryUserStorage implements UserStorage {
             existingUser.setEmail(user.getEmail());
             existingUser.setBirthday(user.getBirthday());
             existingUser.setLogin(user.getLogin());
+            existingUser.setFriends(user.getFriends());
 
             users.put(user.getId(), existingUser);
         }
 
-        log.info("Пользователь " + user.getName() + " изменен");
-
         return users.get(user.getId());
+    }
+
+    @Override
+    public User getUserById(long id) {
+        return users.get(id);
     }
 }

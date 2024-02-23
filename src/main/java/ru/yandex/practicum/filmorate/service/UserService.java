@@ -6,8 +6,10 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.UserNotExistException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.utility.UserPairHandler;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -27,36 +29,20 @@ public class UserService {
     }
 
     public User getUserById(long id) {
-        List<User> users = getUsers();
-        for (User user : users) {
-            if (user.getId() == id) {
-                return user;
-            }
+        User user = userStorage.getUserById(id);
+        if (user == null) {
+            throw new UserNotExistException("User with id " + id + " not found");
         }
-        throw new UserNotExistException("User with id " + id + " not found");
-    }
-
-    private void addFriendToUser(User user, long friendId) {
-        user.getFriends().add(friendId);
-        userStorage.updateUser(user);
-    }
-
-    public User addFriend(long friendOneId, long friendTwoId) {
-        User friendOne = getUserById(friendOneId);
-        User friendTwo = getUserById(friendTwoId);
-
-        addFriendToUser(friendOne, friendTwoId);
-        addFriendToUser(friendTwo, friendOneId);
-
-        return friendOne;
+        return user;
     }
 
     public List<User> getUserFriends(long id) {
         List<User> users = getUsers();
         Set<Long> friendsId = getUserById(id).getFriends();
+
         List<User> userFriends = new ArrayList<>();
 
-        for (User i : users) {
+        for (User i : new ArrayList<>(users)) {
             if (friendsId.contains(i.getId())) {
                 userFriends.add(i);
             }
@@ -65,23 +51,35 @@ public class UserService {
         return userFriends;
     }
 
-    private void removeFriendFromUser(User user, long friendId) {
-        user.getFriends().remove(friendId);
-        userStorage.updateUser(user);
+    public User addFriend(long userOneId, long userTwoId) {
+        UserPairHandler userPairHandler = new UserPairHandler(userOneId, userTwoId, userStorage);
+        userPairHandler.addFriend();
+
+        return userStorage.getUserById(userOneId);
     }
 
-    public void removeFriend(long friendOneId, long friendTwoId) {
-        User friendOne = getUserById(friendOneId);
-        User friendTwo = getUserById(friendTwoId);
-
-        removeFriendFromUser(friendOne, friendTwoId);
-        removeFriendFromUser(friendTwo, friendOneId);
+    public void removeFriend(long userOneId, long userTwoId) {
+        UserPairHandler userPairHandler = new UserPairHandler(userOneId, userTwoId, userStorage);
+        userPairHandler.removeFriend();
     }
 
+    public List<User> getMutualFriends(long id, long otherId) {
+        User userOne = userStorage.getUserById(id);
+        User userTwo = userStorage.getUserById(otherId);
+
+        if (userOne == null || userTwo == null) {
+            throw new UserNotExistException("User not found");
+        }
+
+        Set<Long> mutualFriendsIds = new HashSet<>(userOne.getFriends());
+        mutualFriendsIds.retainAll(userTwo.getFriends());
+
+        List<User> mutualFriends = new ArrayList<>();
+        for (Long friendId : mutualFriendsIds) {
+            mutualFriends.add(userStorage.getUserById(friendId));
+        }
+
+        return mutualFriends;
+    }
 
 }
-// *** GET .../users/{id}
-// *** PUT /users/{id}/friends/{friendId}
-// *** DELETE /users/{id}/friends/{friendId}
-// *** GET /users/{id}/friends                  список пользователей, являющихся его друзьями
-// GET /users/{id}/friends/common/{otherId} список друзей, общих с другим пользователем
