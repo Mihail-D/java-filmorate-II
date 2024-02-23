@@ -31,6 +31,18 @@ public class FilmService {
         return filmStorage.getFilmById(id);
     }
 
+    public List<Film> getFilms() {
+        return filmStorage.getFilms();
+    }
+
+    public Film createFilm(Film film) {
+        return filmStorage.createFilm(film);
+    }
+
+    public Film updateFilm(Film film) {
+        return filmStorage.updateFilm(film);
+    }
+
     public Film addLike(long filmId, long userId) {
         Film film = getFilmById(filmId);
         User user = userStorage.getUserById(userId);
@@ -60,7 +72,7 @@ public class FilmService {
     }
 
     public List<Film> getPopularFilms(int count) {
-        List<Film> films = filmStorage.getFilms();
+        List<Film> films = getFilms();
         films.sort(Comparator.comparingInt((Film film) -> film.getLikes().size()).reversed());
 
         if (count < 0) {

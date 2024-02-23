@@ -28,6 +28,14 @@ public class UserService {
         return userStorage.getUsers();
     }
 
+    public User createUser(User user) {
+        return userStorage.createUser(user);
+    }
+
+    public User updateUser(User user) {
+        return userStorage.updateUser(user);
+    }
+
     public User getUserById(long id) {
         User user = userStorage.getUserById(id);
         if (user == null) {
@@ -52,14 +60,14 @@ public class UserService {
     }
 
     public User addFriend(long userOneId, long userTwoId) {
-        UserPairHandler userPairHandler = new UserPairHandler(userOneId, userTwoId, userStorage);
+        UserPairHandler userPairHandler = new UserPairHandler(userOneId, userTwoId, this);
         userPairHandler.addFriend();
 
         return userStorage.getUserById(userOneId);
     }
 
     public void removeFriend(long userOneId, long userTwoId) {
-        UserPairHandler userPairHandler = new UserPairHandler(userOneId, userTwoId, userStorage);
+        UserPairHandler userPairHandler = new UserPairHandler(userOneId, userTwoId, this);
         userPairHandler.removeFriend();
     }
 
@@ -81,5 +89,4 @@ public class UserService {
 
         return mutualFriends;
     }
-
 }

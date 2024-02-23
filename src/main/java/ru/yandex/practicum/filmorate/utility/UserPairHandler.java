@@ -2,7 +2,7 @@ package ru.yandex.practicum.filmorate.utility;
 
 import ru.yandex.practicum.filmorate.exceptions.UserNotExistException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.Set;
 
@@ -10,12 +10,12 @@ public class UserPairHandler {
 
     private final User userOne;
     private final User userTwo;
-    private final UserStorage userStorage;
+    private final UserService userService;
 
-    public UserPairHandler(long userOneId, long userTwoId, UserStorage userStorage) {
-        this.userStorage = userStorage;
-        this.userOne = userStorage.getUserById(userOneId);
-        this.userTwo = userStorage.getUserById(userTwoId);
+    public UserPairHandler(long userOneId, long userTwoId, UserService userService) {
+        this.userService = userService;
+        this.userOne = userService.getUserById(userOneId);
+        this.userTwo = userService.getUserById(userTwoId);
     }
 
     public void addFriend() {
@@ -29,8 +29,8 @@ public class UserPairHandler {
         userOneFriends.add(userTwo.getId());
         userTwoFriends.add(userOne.getId());
 
-        userStorage.updateUser(userOne);
-        userStorage.updateUser(userTwo);
+        userService.updateUser(userOne);
+        userService.updateUser(userTwo);
     }
 
     public void removeFriend() {
@@ -40,7 +40,7 @@ public class UserPairHandler {
         userOneFriends.remove(userTwo.getId());
         userTwoFriends.remove(userOne.getId());
 
-        userStorage.updateUser(userOne);
-        userStorage.updateUser(userTwo);
+        userService.updateUser(userOne);
+        userService.updateUser(userTwo);
     }
 }
