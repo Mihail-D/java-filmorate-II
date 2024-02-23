@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @UtilityClass
 public class FilmValidator {
 
-    public boolean isValidDate(Film film) {
+    public static boolean isValidDate(Film film) {
         if (film == null || film.getReleaseDate() == null) {
             return false;
         }
@@ -17,32 +17,32 @@ public class FilmValidator {
         return !film.getReleaseDate().isBefore(earliestDate);
     }
 
-    public boolean isValidTitle(Film film) {
+    public static boolean isValidTitle(Film film) {
         if (film == null || film.getName() == null) {
             return false;
         }
         return !film.getName().isBlank() && !film.getName().isEmpty();
     }
 
-    public boolean isValidDescription(Film film) {
+    public static boolean isValidDescription(Film film) {
         if (film == null || film.getDescription() == null) {
             return false;
         }
         return film.getDescription().length() <= 200;
     }
 
-    public boolean isFilmNull(Film film) {
+    public static boolean isFilmNull(Film film) {
         return film == null;
     }
 
-    public boolean isValidDuration(Film film) {
+    public static boolean isValidDuration(Film film) {
         if (film == null) {
             return false;
         }
         return film.getDuration() >= 1;
     }
 
-    public boolean validateFilm(Film film) {
+    public static boolean validateFilm(Film film) {
 
         if (isFilmNull(film)) {
             throw new InputDataErrorException("Film object cannot be null");
