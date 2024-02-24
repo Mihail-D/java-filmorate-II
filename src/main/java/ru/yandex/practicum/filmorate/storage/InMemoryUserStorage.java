@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.UserNotExistException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -14,6 +15,12 @@ import java.util.Map;
 @Slf4j
 @Component
 public class InMemoryUserStorage implements UserStorage {
+    UserValidator userValidator;
+
+    @Autowired
+    public InMemoryUserStorage(UserValidator userValidator) {
+        this.userValidator = userValidator;
+    }
 
     private long id = 0;
     private final Map<Long, User> users = new HashMap<>();
@@ -25,11 +32,8 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User createUser(User user) {
-        UserValidator.validateUserForCreation(user, users);
-
-        if (user.getName() == null || user.getName().isEmpty()) {
-            user.setName(user.getLogin());
-        }
+        userValidator.validateUserForCreation(user, users);
+        userValidator.validateUserName(user);
 
         id++;
         user.setId(id);
