@@ -16,21 +16,20 @@ public class UserPairHandler {
         this.userService = userService;
         this.userOne = userService.getUserById(userOneId);
         this.userTwo = userService.getUserById(userTwoId);
-    }
 
-    public void addFriend() {
         if (userOne == null || userTwo == null) {
             throw new UserNotExistException("User not found");
         }
+    }
 
+    public void addFriend() {
         Set<Long> userOneFriends = userOne.getFriends();
         Set<Long> userTwoFriends = userTwo.getFriends();
 
         userOneFriends.add(userTwo.getId());
         userTwoFriends.add(userOne.getId());
 
-        userService.updateUser(userOne);
-        userService.updateUser(userTwo);
+        updateUser();
     }
 
     public void removeFriend() {
@@ -40,6 +39,10 @@ public class UserPairHandler {
         userOneFriends.remove(userTwo.getId());
         userTwoFriends.remove(userOne.getId());
 
+        updateUser();
+    }
+
+    private void updateUser() {
         userService.updateUser(userOne);
         userService.updateUser(userTwo);
     }

@@ -1,15 +1,15 @@
 package ru.yandex.practicum.filmorate.utility;
 
-import lombok.experimental.UtilityClass;
+import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.InputDataErrorException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
 
-@UtilityClass
+@Component
 public class FilmValidator {
 
-    public static boolean isValidDate(Film film) {
+    public boolean isValidDate(Film film) {
         if (film == null || film.getReleaseDate() == null) {
             return false;
         }
@@ -17,32 +17,32 @@ public class FilmValidator {
         return !film.getReleaseDate().isBefore(earliestDate);
     }
 
-    public static boolean isValidTitle(Film film) {
+    public boolean isValidTitle(Film film) {
         if (film == null || film.getName() == null) {
             return false;
         }
         return !film.getName().isBlank() && !film.getName().isEmpty();
     }
 
-    public static boolean isValidDescription(Film film) {
+    public boolean isValidDescription(Film film) {
         if (film == null || film.getDescription() == null) {
             return false;
         }
         return film.getDescription().length() <= 200;
     }
 
-    public static boolean isFilmNull(Film film) {
+    public boolean isFilmNull(Film film) {
         return film == null;
     }
 
-    public static boolean isValidDuration(Film film) {
+    public boolean isValidDuration(Film film) {
         if (film == null) {
             return false;
         }
         return film.getDuration() >= 1;
     }
 
-    public static boolean validateFilm(Film film) {
+    public boolean validateFilm(Film film) {
 
         if (isFilmNull(film)) {
             throw new InputDataErrorException("Film object cannot be null");

@@ -15,7 +15,7 @@ import java.util.Set;
 public class User {
 
     private Set<Long> friends = new HashSet<>();
-    long id;
+    private long id;
 
     @Email
     String email;
@@ -23,6 +23,7 @@ public class User {
     @NotBlank
     String login;
 
+    @NotBlank
     String name;
 
     @Past
