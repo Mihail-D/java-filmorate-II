@@ -1,6 +1,6 @@
 package ru.yandex.practicum.filmorate.utility;
 
-import lombok.experimental.UtilityClass;
+import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.InputDataErrorException;
 import ru.yandex.practicum.filmorate.exceptions.UserAlreadyExistsException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -8,7 +8,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.time.LocalDate;
 import java.util.Map;
 
-@UtilityClass
+@Service
 public class UserValidator {
 
     public void isMailEmpty(User user) {
@@ -38,7 +38,13 @@ public class UserValidator {
 
     }
 
-    public void validateUserForCreation(User user, Map<Integer, User> users) {
+    public void validateUserName(User user) {
+        if (user.getName() == null || user.getName().isEmpty()) {
+            user.setName(user.getLogin());
+        }
+    }
+
+    public void validateUserForCreation(User user, Map<Long, User> users) {
         isMailEmpty(user);
         isMailPatternValid(user);
         isLoginEmpty(user);
