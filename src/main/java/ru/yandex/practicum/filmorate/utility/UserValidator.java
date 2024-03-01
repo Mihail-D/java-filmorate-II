@@ -1,15 +1,23 @@
 package ru.yandex.practicum.filmorate.utility;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.InputDataErrorException;
 import ru.yandex.practicum.filmorate.exceptions.UserAlreadyExistsException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
-import java.util.Map;
 
 @Service
 public class UserValidator {
+
+    private final JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    public UserValidator(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     public void isMailEmpty(User user) {
         if (user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) {
@@ -44,13 +52,19 @@ public class UserValidator {
         }
     }
 
-    public void validateUserForCreation(User user, Map<Long, User> users) {
+    public boolean isUserExists(long id) {
+        String sql = "SELECT COUNT(*) FROM users WHERE user_id = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> rs.getInt(1), id);
+        return count != null && count > 0;
+    }
+
+    public void validateUserForCreation(User user) {
         isMailEmpty(user);
         isMailPatternValid(user);
         isLoginEmpty(user);
         isBirthdayValid(user);
 
-        if (users.containsKey(user.getId())) {
+        if (isUserExists(user.getId())) {
             throw new UserAlreadyExistsException("The user is already included in the database");
         }
     }

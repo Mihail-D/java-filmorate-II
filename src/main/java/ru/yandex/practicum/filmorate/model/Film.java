@@ -28,6 +28,12 @@ public class Film {
     @Positive
     int duration;
 
+    @NotEmpty
+    int genreId;
+
+    @NotEmpty
+    int mpaRaring;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
