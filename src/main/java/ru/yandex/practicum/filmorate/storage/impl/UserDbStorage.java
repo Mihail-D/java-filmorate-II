@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.UserNotExistException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -27,7 +28,17 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public List<User> getUsers() {
-        return null;
+        String sql = "SELECT * FROM users";
+        RowMapper<User> rowMapper = (rs, rowNum) -> {
+            User user = new User();
+            user.setId(rs.getLong("user_id"));
+            user.setName(rs.getString("name"));
+            user.setEmail(rs.getString("email"));
+            user.setBirthday(rs.getDate("birthday").toLocalDate());
+            user.setLogin(rs.getString("login"));
+            return user;
+        };
+        return jdbcTemplate.query(sql, rowMapper);
     }
 
     @Override
