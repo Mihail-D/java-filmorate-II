@@ -68,6 +68,23 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User getUserById(long id) {
-        return null;
+        String sql = "SELECT * FROM users WHERE user_id = ?";
+        RowMapper<User> rowMapper = (rs, rowNum) -> {
+            User user = new User();
+            user.setId(rs.getLong("user_id"));
+            user.setName(rs.getString("name"));
+            user.setEmail(rs.getString("email"));
+            user.setBirthday(rs.getDate("birthday").toLocalDate());
+            user.setLogin(rs.getString("login"));
+            return user;
+        };
+
+        List<User> users = jdbcTemplate.query(sql, rowMapper, id);
+        if (users.isEmpty()) {
+            throw new UserNotExistException("User not found");
+        }
+
+        return users.get(0);
+
     }
 }
