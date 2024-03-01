@@ -1,11 +1,13 @@
 package ru.yandex.practicum.filmorate.utility;
 
+import lombok.extern.slf4j.Slf4j;
 import ru.yandex.practicum.filmorate.exceptions.UserNotExistException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.Set;
 
+@Slf4j
 public class UserPairHandler {
 
     private final User userOne;
@@ -28,6 +30,9 @@ public class UserPairHandler {
 
         userOneFriends.add(userTwo.getId());
         userTwoFriends.add(userOne.getId());
+
+        log.info("<<< Размер userOneFriends = " +  userOneFriends.size());
+        log.info("<<< Размер userTwoFriends = " +  userTwoFriends.size());
 
         updateUser();
     }

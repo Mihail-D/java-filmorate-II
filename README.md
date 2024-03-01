@@ -1,2 +1,3 @@
 # java-filmorate
-Template repository for Filmorate project.
+
+![db_map](src/main/resources/db_map.png)

@@ -69,6 +69,7 @@ public class UserDbStorage implements UserStorage {
     @Override
     public User getUserById(long id) {
         String sql = "SELECT * FROM users WHERE user_id = ?";
+
         RowMapper<User> rowMapper = (rs, rowNum) -> {
             User user = new User();
             user.setId(rs.getLong("user_id"));

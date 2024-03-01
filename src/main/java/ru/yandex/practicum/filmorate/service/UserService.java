@@ -45,9 +45,11 @@ public class UserService {
     }
 
     public List<User> getUserFriends(long id) {
+        //log.info("!!!! Начало работы метода getUserFriends(long id)");
         List<User> users = getUsers();
+        //log.info("Размер List<User> users " + users.size());
         Set<Long> friendsId = getUserById(id).getFriends();
-
+        //log.info("Размер Set<Long> friendsId " + friendsId.size());
         List<User> userFriends = new ArrayList<>();
 
         for (User i : new ArrayList<>(users)) {
@@ -55,7 +57,7 @@ public class UserService {
                 userFriends.add(i);
             }
         }
-
+        //log.info("Размер List<User> userFriends " + userFriends.size());
         return userFriends;
     }
 
