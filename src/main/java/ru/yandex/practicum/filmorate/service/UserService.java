@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.UserNotExistException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
-import ru.yandex.practicum.filmorate.utility.UserPairHandler;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -45,11 +44,8 @@ public class UserService {
     }
 
     public List<User> getUserFriends(long id) {
-        //log.info("!!!! Начало работы метода getUserFriends(long id)");
         List<User> users = getUsers();
-        //log.info("Размер List<User> users " + users.size());
         Set<Long> friendsId = getUserById(id).getFriends();
-        //log.info("Размер Set<Long> friendsId " + friendsId.size());
         List<User> userFriends = new ArrayList<>();
 
         for (User i : new ArrayList<>(users)) {
@@ -57,20 +53,39 @@ public class UserService {
                 userFriends.add(i);
             }
         }
-        //log.info("Размер List<User> userFriends " + userFriends.size());
         return userFriends;
     }
 
     public User addFriend(long userOneId, long userTwoId) {
-        UserPairHandler userPairHandler = new UserPairHandler(userOneId, userTwoId, this);
-        userPairHandler.addFriend();
+        User userOne = getUserById(userOneId);
+        User userTwo = getUserById(userTwoId);
 
-        return userStorage.getUserById(userOneId);
+        if (userOne == null || userTwo == null) {
+            throw new UserNotExistException("User not found");
+        }
+
+        userOne.getFriends().add(userTwo.getId());
+        userTwo.getFriends().add(userOne.getId());
+
+        updateUser(userOne);
+        updateUser(userTwo);
+
+        return userOne;
     }
 
     public void removeFriend(long userOneId, long userTwoId) {
-        UserPairHandler userPairHandler = new UserPairHandler(userOneId, userTwoId, this);
-        userPairHandler.removeFriend();
+        User userOne = getUserById(userOneId);
+        User userTwo = getUserById(userTwoId);
+
+        if (userOne == null || userTwo == null) {
+            throw new UserNotExistException("User not found");
+        }
+
+        userOne.getFriends().remove(userTwo.getId());
+        userTwo.getFriends().remove(userOne.getId());
+
+        updateUser(userOne);
+        updateUser(userTwo);
     }
 
     public List<User> getMutualFriends(long id, long otherId) {
