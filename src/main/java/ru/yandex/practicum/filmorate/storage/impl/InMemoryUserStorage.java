@@ -53,7 +53,7 @@ public class InMemoryUserStorage implements UserStorageTMP {
             existingUser.setEmail(user.getEmail());
             existingUser.setBirthday(user.getBirthday());
             existingUser.setLogin(user.getLogin());
-            existingUser.setFriends(user.getFriends());
+
 
             users.put(user.getId(), existingUser);
         }

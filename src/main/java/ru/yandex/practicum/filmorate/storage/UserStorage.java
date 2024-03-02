@@ -15,4 +15,12 @@ public interface UserStorage {
     User updateUser(User user);
 
     User getUserById(long id);
+
+    void addFriend(long userOneId, long userTwoId, boolean status);
+
+    void updateFriendshipStatus(long userOneId, long userTwoId, boolean status);
+
+    boolean isFriendAlready(long userOneId, long userTwoId);
+
+    List<Long> getFriendsIds(long userId);
 }

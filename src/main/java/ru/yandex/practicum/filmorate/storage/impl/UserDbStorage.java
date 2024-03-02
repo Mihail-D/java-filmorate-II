@@ -88,4 +88,29 @@ public class UserDbStorage implements UserStorage {
         return users.get(0);
 
     }
+
+    @Override
+    public void addFriend(long userOneId, long userTwoId, boolean status) {
+        String sql = "INSERT INTO FRIENDSHIP (USER_ID, FRIEND_ID, STATUS) VALUES (?, ?, ?)";
+        jdbcTemplate.update(sql, userOneId, userTwoId, status);
+    }
+
+    @Override
+    public void updateFriendshipStatus(long userOneId, long userTwoId, boolean status) {
+        String sql = "UPDATE FRIENDSHIP SET STATUS = ? WHERE USER_ID = ? AND FRIEND_ID = ?";
+        jdbcTemplate.update(sql, status, userOneId, userTwoId);
+    }
+
+    @Override
+    public boolean isFriendAlready(long userOneId, long userTwoId) {
+        String sql = "SELECT COUNT(*) FROM FRIENDSHIP WHERE USER_ID = ? AND FRIEND_ID = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> rs.getInt(1), userOneId, userTwoId);
+        return count != null && count > 0;
+    }
+
+    @Override
+    public List<Long> getFriendsIds(long userId) {
+        String sql = "SELECT FRIEND_ID FROM FRIENDSHIP WHERE USER_ID = ?";
+        return jdbcTemplate.queryForList(sql, Long.class, userId);
+    }
 }

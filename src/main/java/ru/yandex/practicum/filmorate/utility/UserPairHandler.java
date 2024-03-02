@@ -5,8 +5,6 @@ import ru.yandex.practicum.filmorate.exceptions.UserNotExistException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
-import java.util.Set;
-
 @Slf4j
 public class UserPairHandler {
 
@@ -24,7 +22,7 @@ public class UserPairHandler {
         }
     }
 
-    public void addFriend() {
+/*    public void addFriend() {
         Set<Long> userOneFriends = userOne.getFriends();
         Set<Long> userTwoFriends = userTwo.getFriends();
 
@@ -35,8 +33,8 @@ public class UserPairHandler {
         log.info("<<< Размер userTwoFriends = " +  userTwoFriends.size());
 
         updateUser();
-    }
-
+    }*/
+/*
     public void removeFriend() {
         Set<Long> userOneFriends = userOne.getFriends();
         Set<Long> userTwoFriends = userTwo.getFriends();
@@ -45,7 +43,7 @@ public class UserPairHandler {
         userTwoFriends.remove(userOne.getId());
 
         updateUser();
-    }
+    }*/
 
     private void updateUser() {
         userService.updateUser(userOne);

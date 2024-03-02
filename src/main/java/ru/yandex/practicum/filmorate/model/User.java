@@ -7,14 +7,10 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Past;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
 @Getter
 @Setter
 public class User {
-
-    private Set<Long> friends = new HashSet<>();
 
     @NotBlank
     private long id;
@@ -45,9 +41,6 @@ public class User {
         if (getId() != user.getId()) {
             return false;
         }
-        if (getFriends() != null ? !getFriends().equals(user.getFriends()) : user.getFriends() != null) {
-            return false;
-        }
         if (!getEmail().equals(user.getEmail())) {
             return false;
         }
@@ -62,8 +55,7 @@ public class User {
 
     @Override
     public int hashCode() {
-        int result = getFriends() != null ? getFriends().hashCode() : 0;
-        result = 31 * result + (int) (getId() ^ (getId() >>> 32));
+        int result = (int) (getId() ^ (getId() >>> 32));
         result = 31 * result + getEmail().hashCode();
         result = 31 * result + getLogin().hashCode();
         result = 31 * result + getName().hashCode();

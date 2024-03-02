@@ -8,9 +8,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Slf4j
 @Service
@@ -43,19 +41,6 @@ public class UserService {
         return user;
     }
 
-    public List<User> getUserFriends(long id) {
-        List<User> users = getUsers();
-        Set<Long> friendsId = getUserById(id).getFriends();
-        List<User> userFriends = new ArrayList<>();
-
-        for (User i : new ArrayList<>(users)) {
-            if (friendsId.contains(i.getId())) {
-                userFriends.add(i);
-            }
-        }
-        return userFriends;
-    }
-
     public User addFriend(long userOneId, long userTwoId) {
         User userOne = getUserById(userOneId);
         User userTwo = getUserById(userTwoId);
@@ -64,16 +49,37 @@ public class UserService {
             throw new UserNotExistException("User not found");
         }
 
-        userOne.getFriends().add(userTwo.getId());
-        userTwo.getFriends().add(userOne.getId());
+        boolean isFriendAlready = userStorage.isFriendAlready(userOneId, userTwoId);
 
-        updateUser(userOne);
-        updateUser(userTwo);
+        if (isFriendAlready) {
+            userStorage.updateFriendshipStatus(userOneId, userTwoId, true);
+            userStorage.addFriend(userOneId, userTwoId, true);
+        } else {
+            userStorage.addFriend(userOneId, userTwoId, false);
+        }
 
         return userOne;
     }
 
-    public void removeFriend(long userOneId, long userTwoId) {
+    public List<User> getUserFriends(long id) {
+        User user = getUserById(id);
+        if (user == null) {
+            throw new UserNotExistException("User with id " + id + " not found");
+        }
+
+        List<Long> friendsIds = userStorage.getFriendsIds(id);
+        List<User> friends = new ArrayList<>();
+        for (Long friendId : friendsIds) {
+            User friend = userStorage.getUserById(friendId);
+            if (friend != null) {
+                friends.add(friend);
+            }
+        }
+
+        return friends;
+    }
+
+/*    public void removeFriend(long userOneId, long userTwoId) {
         User userOne = getUserById(userOneId);
         User userTwo = getUserById(userTwoId);
 
@@ -86,9 +92,9 @@ public class UserService {
 
         updateUser(userOne);
         updateUser(userTwo);
-    }
+    }*/
 
-    public List<User> getMutualFriends(long id, long otherId) {
+/*    public List<User> getMutualFriends(long id, long otherId) {
         User userOne = userStorage.getUserById(id);
         User userTwo = userStorage.getUserById(otherId);
 
@@ -105,5 +111,5 @@ public class UserService {
         }
 
         return mutualFriends;
-    }
+    }*/
 }
