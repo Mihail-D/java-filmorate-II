@@ -113,4 +113,23 @@ public class UserDbStorage implements UserStorage {
         String sql = "SELECT FRIEND_ID FROM FRIENDSHIP WHERE USER_ID = ?";
         return jdbcTemplate.queryForList(sql, Long.class, userId);
     }
+
+    @Override
+    public void removeFriend(long userOneId, long userTwoId) {
+        String sql = "DELETE FROM FRIENDSHIP WHERE USER_ID = ? AND FRIEND_ID = ?";
+        jdbcTemplate.update(sql, userOneId, userTwoId);
+    }
+
+    @Override
+    public void setFriendshipStatusFalse(long userOneId, long userTwoId) {
+        String sql = "UPDATE FRIENDSHIP SET STATUS = false WHERE USER_ID = ? AND FRIEND_ID = ?";
+        jdbcTemplate.update(sql, userOneId, userTwoId);
+    }
+
+    @Override
+    public List<Long> getMutualFriends(long userOneId, long userTwoId) {
+        String sql = "SELECT FRIEND_ID FROM FRIENDSHIP WHERE USER_ID = ? AND FRIEND_ID IN (SELECT FRIEND_ID FROM FRIENDSHIP WHERE USER_ID = ?)";
+        return jdbcTemplate.queryForList(sql, Long.class, userOneId, userTwoId);
+    }
 }
+

@@ -79,7 +79,7 @@ public class UserService {
         return friends;
     }
 
-/*    public void removeFriend(long userOneId, long userTwoId) {
+    public void removeFriend(long userOneId, long userTwoId) {
         User userOne = getUserById(userOneId);
         User userTwo = getUserById(userTwoId);
 
@@ -87,14 +87,17 @@ public class UserService {
             throw new UserNotExistException("User not found");
         }
 
-        userOne.getFriends().remove(userTwo.getId());
-        userTwo.getFriends().remove(userOne.getId());
+        boolean isFriendAlready = userStorage.isFriendAlready(userOneId, userTwoId);
 
-        updateUser(userOne);
-        updateUser(userTwo);
-    }*/
+        if (isFriendAlready) {
+            userStorage.removeFriend(userOneId, userTwoId);
+            if (userStorage.isFriendAlready(userTwoId, userOneId)) {
+                userStorage.setFriendshipStatusFalse(userTwoId, userOneId);
+            }
+        }
+    }
 
-/*    public List<User> getMutualFriends(long id, long otherId) {
+    public List<User> getMutualFriends(long id, long otherId) {
         User userOne = userStorage.getUserById(id);
         User userTwo = userStorage.getUserById(otherId);
 
@@ -102,14 +105,14 @@ public class UserService {
             throw new UserNotExistException("User not found");
         }
 
-        Set<Long> mutualFriendsIds = new HashSet<>(userOne.getFriends());
-        mutualFriendsIds.retainAll(userTwo.getFriends());
+        List<Long> mutualFriendsIds = userStorage.getMutualFriends(id, otherId);
 
         List<User> mutualFriends = new ArrayList<>();
+
         for (Long friendId : mutualFriendsIds) {
             mutualFriends.add(userStorage.getUserById(friendId));
         }
 
         return mutualFriends;
-    }*/
+    }
 }

@@ -23,4 +23,10 @@ public interface UserStorage {
     boolean isFriendAlready(long userOneId, long userTwoId);
 
     List<Long> getFriendsIds(long userId);
+
+    void removeFriend(long userOneId, long userTwoId);
+
+    void setFriendshipStatusFalse(long userOneId, long userTwoId);
+
+    List<Long> getMutualFriends(long userOneId, long userTwoId);
 }
