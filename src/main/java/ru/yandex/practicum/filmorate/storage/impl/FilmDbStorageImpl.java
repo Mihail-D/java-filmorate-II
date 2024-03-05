@@ -2,34 +2,34 @@ package ru.yandex.practicum.filmorate.storage.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exceptions.FilmNotExistException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.MpaStorage;
 import ru.yandex.practicum.filmorate.utility.FilmValidator;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Component
-public class InMemoryFilmStorage implements FilmStorage {
+public class FilmDbStorageImpl implements FilmStorage {
 
+    JdbcTemplate jdbcTemplate;
     FilmValidator filmValidator;
+    MpaStorage mpaStorage;
+    int id = 0;
 
     @Autowired
-    public InMemoryFilmStorage(FilmValidator filmValidator) {
+    public FilmDbStorageImpl(JdbcTemplate jdbcTemplate, FilmValidator filmValidator, MpaStorage mpaStorage) {
+        this.jdbcTemplate = jdbcTemplate;
         this.filmValidator = filmValidator;
+        this.mpaStorage = mpaStorage;
     }
-
-    private long id = 0;
-    private final Map<Long, Film> films = new HashMap<>();
 
     @Override
     public List<Film> getFilms() {
-        return new ArrayList<>(films.values());
+        return null;
     }
 
     @Override
@@ -37,7 +37,12 @@ public class InMemoryFilmStorage implements FilmStorage {
         if (filmValidator.validateFilm(film)) {
             id++;
             film.setId(id);
-            films.put(film.getId(), film);
+            String sql = "INSERT INTO films (film_id, name, description, release_date, duration, mpa_id) VALUES (?, ?, ?, ?, ?, ?)";
+            jdbcTemplate.update(sql, film.getId(), film.getName(), film.getDescription(), film.getReleaseDate(),
+                    film.getDuration(), film.getMpaRaring()
+            );
+
+            return film;
         }
 
         return film;
@@ -45,20 +50,11 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film updateFilm(Film film) {
-        if (!films.containsKey(film.getId())) {
-            throw new FilmNotExistException("There is no such film in the database");
-        } else {
-            films.put(film.getId(), film);
-        }
-
-        return film;
+        return null;
     }
 
     @Override
     public Film getFilmById(long id) {
-        if (!films.containsKey(id)) {
-            throw new FilmNotExistException("There is no such film in the database");
-        }
-        return films.get(id);
+        return null;
     }
 }

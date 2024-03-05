@@ -7,14 +7,11 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Positive;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
 @Getter
 @Setter
 public class Film {
 
-    private Set<Long> likes = new HashSet<>();
     private long id;
 
     @NotEmpty
@@ -51,10 +48,13 @@ public class Film {
         if (getDuration() != film.getDuration()) {
             return false;
         }
-        if (getLikes() != null ? !getLikes().equals(film.getLikes()) : film.getLikes() != null) {
+        if (getGenreId() != film.getGenreId()) {
             return false;
         }
-        if (getName() != null ? !getName().equals(film.getName()) : film.getName() != null) {
+        if (getMpaRaring() != film.getMpaRaring()) {
+            return false;
+        }
+        if (!getName().equals(film.getName())) {
             return false;
         }
         if (getDescription() != null ? !getDescription().equals(film.getDescription()) : film.getDescription() != null) {
@@ -65,12 +65,13 @@ public class Film {
 
     @Override
     public int hashCode() {
-        int result = getLikes() != null ? getLikes().hashCode() : 0;
-        result = 31 * result + (int) (getId() ^ (getId() >>> 32));
-        result = 31 * result + (getName() != null ? getName().hashCode() : 0);
+        int result = (int) (getId() ^ (getId() >>> 32));
+        result = 31 * result + getName().hashCode();
         result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
         result = 31 * result + getReleaseDate().hashCode();
         result = 31 * result + getDuration();
+        result = 31 * result + getGenreId();
+        result = 31 * result + getMpaRaring();
         return result;
     }
 }
