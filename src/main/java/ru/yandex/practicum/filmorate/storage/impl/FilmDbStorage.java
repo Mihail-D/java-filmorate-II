@@ -13,7 +13,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class FilmDbStorageImpl implements FilmStorage {
+public class FilmDbStorage implements FilmStorage {
 
     JdbcTemplate jdbcTemplate;
     FilmValidator filmValidator;
@@ -21,7 +21,7 @@ public class FilmDbStorageImpl implements FilmStorage {
     int id = 0;
 
     @Autowired
-    public FilmDbStorageImpl(JdbcTemplate jdbcTemplate, FilmValidator filmValidator, MpaStorage mpaStorage) {
+    public FilmDbStorage(JdbcTemplate jdbcTemplate, FilmValidator filmValidator, MpaStorage mpaStorage) {
         this.jdbcTemplate = jdbcTemplate;
         this.filmValidator = filmValidator;
         this.mpaStorage = mpaStorage;
