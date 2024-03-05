@@ -25,7 +25,6 @@ public class Film {
     @Positive
     int duration;
 
-    @NotEmpty
     int genreId;
 
     @NotEmpty
