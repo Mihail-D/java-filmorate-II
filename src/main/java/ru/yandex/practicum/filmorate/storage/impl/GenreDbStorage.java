@@ -9,6 +9,8 @@ import ru.yandex.practicum.filmorate.exceptions.GenreNotFoundException;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.GenreStorage;
 
+import java.util.List;
+
 @Slf4j
 @Component
 public class GenreDbStorage implements GenreStorage {
@@ -34,5 +36,18 @@ public class GenreDbStorage implements GenreStorage {
         };
 
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    }
+
+    @Override
+    public List<Genre> getAllGenre() {
+        String sql = "SELECT * FROM genre ORDER BY genre_id";
+        RowMapper<Genre> rowMapper = (rs, rowNum) -> {
+            Genre genre = new Genre();
+            genre.setId(rs.getInt("genre_id"));
+            genre.setName(rs.getString("name"));
+            return genre;
+        };
+
+        return jdbcTemplate.query(sql, rowMapper);
     }
 }
