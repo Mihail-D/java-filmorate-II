@@ -11,11 +11,11 @@ import javax.validation.constraints.NotBlank;
 @Builder
 public class Mpa {
 
-    int id;
+    private int id;
 
     @NotBlank
-    String name;
+    private String name;
 
     @NotBlank
-    String description;
+    private String description;
 }

@@ -18,16 +18,16 @@ public class User {
     private long id;
 
     @Email
-    String email;
+    private String email;
 
     @NotBlank
-    String login;
+    private String login;
 
     @NotBlank
-    String name;
+    private String name;
 
     @Past
-    LocalDate birthday;
+    private LocalDate birthday;
 
     @Override
     public boolean equals(Object o) {

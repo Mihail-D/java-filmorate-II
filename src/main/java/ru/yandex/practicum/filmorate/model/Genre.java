@@ -11,10 +11,10 @@ import javax.validation.constraints.NotBlank;
 @Builder
 public class Genre {
 
-    int id;
+    private int id;
 
     @NotBlank
-    String name;
+    private String name;
 
     @Override
     public boolean equals(Object o) {

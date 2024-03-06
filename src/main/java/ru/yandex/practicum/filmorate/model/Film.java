@@ -17,22 +17,22 @@ public class Film {
     private long id;
 
     @NotEmpty
-    String name;
+    private String name;
 
     @Max(value = 200, message = "description should not be longer than 200")
-    String description;
+    private String description;
 
-    LocalDate releaseDate;
+    private LocalDate releaseDate;
 
     @Positive
-    int duration;
+    private int duration;
 
-    int genreId;
+    private int genreId;
 
     @NotEmpty
-    int mpaRaring;
+    private int mpaRaring;
 
-    Mpa mpa;
+    private Mpa mpa;
 
     @Override
     public boolean equals(Object o) {
