@@ -4,11 +4,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exceptions.UserNotExistException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.MpaStorage;
 import ru.yandex.practicum.filmorate.utility.FilmValidator;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -29,7 +34,9 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> getFilms() {
-        return null;
+        String sql = "SELECT * FROM films";
+
+        return jdbcTemplate.query(sql, (rs, rowNum) -> mapRowToFilm(rs));
     }
 
     @Override
@@ -37,12 +44,13 @@ public class FilmDbStorage implements FilmStorage {
         if (filmValidator.validateFilm(film)) {
             id++;
             film.setId(id);
+            Mpa mpa = mpaStorage.getMpaById(film.getMpa().getId());
+            film.setMpa(mpa);
+
             String sql = "INSERT INTO films (film_id, name, description, release_date, duration, mpa_id) VALUES (?, ?, ?, ?, ?, ?)";
             jdbcTemplate.update(sql, film.getId(), film.getName(), film.getDescription(), film.getReleaseDate(),
-                    film.getDuration(), film.getMpaRaring()
+                    film.getDuration(), film.getMpa().getId()
             );
-
-            return film;
         }
 
         return film;
@@ -50,11 +58,41 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film updateFilm(Film film) {
-        return null;
+        if (!filmValidator.validateFilm(film)) {
+            throw new UserNotExistException("There is no such film in the database");
+        } else {
+            Mpa mpa = mpaStorage.getMpaById(film.getMpa().getId());
+            film.setMpa(mpa);
+            String sql = "UPDATE films SET name = ?, description = ?, release_date = ?, duration = ?, mpa_id = ? " +
+                    "WHERE film_id = ?";
+            jdbcTemplate.update(sql, film.getName(), film.getDescription(), film.getReleaseDate(),
+                    film.getDuration(), film.getMpa().getId(), film.getId()
+            );
+        }
+        return film;
     }
 
     @Override
     public Film getFilmById(long id) {
         return null;
+    }
+
+    private Film mapRowToFilm(ResultSet rs) throws SQLException {
+
+        long id = rs.getLong("film_id");
+        String name = rs.getString("name");
+        String description = rs.getString("description");
+        LocalDate releaseDate = rs.getDate("release_date").toLocalDate();
+        int duration = rs.getInt("duration");
+        int mpaRaring = rs.getInt("mpa_id");
+
+        return Film.builder()
+                .id(id)
+                .name(name)
+                .description(description)
+                .releaseDate(releaseDate)
+                .duration(duration)
+                .mpaRaring(mpaRaring)
+                .build();
     }
 }

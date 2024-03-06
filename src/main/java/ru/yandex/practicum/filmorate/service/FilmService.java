@@ -7,6 +7,8 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
+import java.util.List;
+
 @Slf4j
 @Service
 public class FilmService {
@@ -23,18 +25,18 @@ public class FilmService {
 /*    public Film getFilmById(long id) {
         return filmStorage.getFilmById(id);
     }*/
-/*
+
     public List<Film> getFilms() {
         return filmStorage.getFilms();
-    }*/
+    }
 
     public Film createFilm(Film film) {
         return filmStorage.createFilm(film);
     }
 
-/*    public Film updateFilm(Film film) {
+    public Film updateFilm(Film film) {
         return filmStorage.updateFilm(film);
-    }*/
+    }
 
 /*   public Film addLike(long filmId, long userId) {
         Film film = getFilmById(filmId);

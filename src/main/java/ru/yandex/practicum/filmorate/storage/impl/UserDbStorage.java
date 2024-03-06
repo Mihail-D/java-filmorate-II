@@ -3,13 +3,15 @@ package ru.yandex.practicum.filmorate.storage.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.UserNotExistException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 import ru.yandex.practicum.filmorate.utility.UserValidator;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -29,16 +31,8 @@ public class UserDbStorage implements UserStorage {
     @Override
     public List<User> getUsers() {
         String sql = "SELECT * FROM users";
-        RowMapper<User> rowMapper = (rs, rowNum) -> {
-            User user = new User();
-            user.setId(rs.getLong("user_id"));
-            user.setName(rs.getString("name"));
-            user.setEmail(rs.getString("email"));
-            user.setBirthday(rs.getDate("birthday").toLocalDate());
-            user.setLogin(rs.getString("login"));
-            return user;
-        };
-        return jdbcTemplate.query(sql, rowMapper);
+
+        return jdbcTemplate.query(sql, (rs, rowNum) -> mapRowToUser(rs));
     }
 
     @Override
@@ -70,17 +64,7 @@ public class UserDbStorage implements UserStorage {
     public User getUserById(long id) {
         String sql = "SELECT * FROM users WHERE user_id = ?";
 
-        RowMapper<User> rowMapper = (rs, rowNum) -> {
-            User user = new User();
-            user.setId(rs.getLong("user_id"));
-            user.setName(rs.getString("name"));
-            user.setEmail(rs.getString("email"));
-            user.setBirthday(rs.getDate("birthday").toLocalDate());
-            user.setLogin(rs.getString("login"));
-            return user;
-        };
-
-        List<User> users = jdbcTemplate.query(sql, rowMapper, id);
+        List<User> users = jdbcTemplate.query(sql, (rs, rowNum) -> mapRowToUser(rs), id);
         if (users.isEmpty()) {
             throw new UserNotExistException("User not found");
         }
@@ -131,5 +115,23 @@ public class UserDbStorage implements UserStorage {
         String sql = "SELECT FRIEND_ID FROM FRIENDSHIP WHERE USER_ID = ? AND FRIEND_ID IN (SELECT FRIEND_ID FROM FRIENDSHIP WHERE USER_ID = ?)";
         return jdbcTemplate.queryForList(sql, Long.class, userOneId, userTwoId);
     }
+
+    private User mapRowToUser(ResultSet rs) throws SQLException {
+
+        long id = rs.getLong("user_id");
+        String email = rs.getString("email");
+        String login = rs.getString("login");
+        String name = rs.getString("name");
+        LocalDate birthday = rs.getDate("birthday").toLocalDate();
+
+        return User.builder()
+                .id(id)
+                .email(email)
+                .login(login)
+                .name(name)
+                .birthday(birthday)
+                .build();
+    }
+
 }
 

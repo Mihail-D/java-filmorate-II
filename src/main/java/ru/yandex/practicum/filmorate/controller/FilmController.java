@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -21,10 +22,10 @@ public class FilmController {
         this.filmService = filmService;
     }
 
-/*    @GetMapping()
+    @GetMapping()
     public List<Film> getFilms() {
         return filmService.getFilms();
-    }*/
+    }
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
@@ -32,10 +33,10 @@ public class FilmController {
         return filmService.createFilm(film);
     }
 
-/*    @PutMapping()
+    @PutMapping()
     public Film updateFilm(@Valid @RequestBody Film film) {
         return filmService.updateFilm(film);
-    }*/
+    }
 
 /*    @GetMapping("/{id}")
     public Film getFilmById(@PathVariable long id) {
