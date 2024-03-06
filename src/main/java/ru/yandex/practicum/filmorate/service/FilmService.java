@@ -4,7 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.GenreStorage;
+import ru.yandex.practicum.filmorate.storage.MpaStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.List;
@@ -15,19 +18,33 @@ public class FilmService {
 
     FilmStorage filmStorage;
     UserStorage userStorage;
+    MpaStorage mpaStorage;
+    GenreStorage genreStorage;
 
     @Autowired
-    public FilmService(FilmStorage filmStorage, UserStorage userStorage) {
+    public FilmService(FilmStorage filmStorage, UserStorage userStorage, MpaStorage mpaStorage, GenreStorage genreStorage) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
+        this.mpaStorage = mpaStorage;
+        this.genreStorage = genreStorage;
     }
 
-/*    public Film getFilmById(long id) {
+    /*    public Film getFilmById(long id) {
         return filmStorage.getFilmById(id);
     }*/
 
     public List<Film> getFilms() {
-        return filmStorage.getFilms();
+        List<Film> films = filmStorage.getFilms();
+
+        for (Film film : films) {
+            Mpa mpa = film.getMpa();
+            if (mpa != null) {
+                Mpa newMpa = mpaStorage.getMpaById(mpa.getId());
+                film.setMpa(newMpa);
+            }
+        }
+
+        return films;
     }
 
     public Film createFilm(Film film) {

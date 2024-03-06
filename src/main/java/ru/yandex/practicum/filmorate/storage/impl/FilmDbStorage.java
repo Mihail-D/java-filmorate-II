@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exceptions.UserNotExistException;
+import ru.yandex.practicum.filmorate.exceptions.FilmNotExistException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
@@ -58,8 +58,8 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film updateFilm(Film film) {
-        if (!filmValidator.validateFilm(film)) {
-            throw new UserNotExistException("There is no such film in the database");
+        if (!filmValidator.isFilmExists(film.getId())) {
+            throw new FilmNotExistException("There is no such film in the database");
         } else {
             Mpa mpa = mpaStorage.getMpaById(film.getMpa().getId());
             film.setMpa(mpa);
