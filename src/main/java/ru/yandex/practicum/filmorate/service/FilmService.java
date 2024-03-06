@@ -38,11 +38,11 @@ public class FilmService {
         List<Film> films = filmStorage.getFilms();
 
         for (Film film : films) {
-            Mpa mpa = mpaStorage.getMpaById(film.getMpaRaring());
+            Mpa mpa = mpaStorage.getMpaById(film.getMpa().getId());
             if (mpa != null) {
                 film.setMpa(mpa);
             } else {
-                throw new MpaNotFoundException("Mpa not found for id: " + film.getMpaRaring());
+                throw new MpaNotFoundException("Mpa not found for id: " + film.getMpa().getId());
             }
         }
 

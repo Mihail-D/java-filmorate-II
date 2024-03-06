@@ -29,9 +29,6 @@ public class Film {
 
     private int genreId;
 
-    @NotEmpty
-    private int mpaRaring;
-
     private Mpa mpa;
 
     @Override
@@ -54,16 +51,16 @@ public class Film {
         if (getGenreId() != film.getGenreId()) {
             return false;
         }
-        if (getMpaRaring() != film.getMpaRaring()) {
-            return false;
-        }
         if (!getName().equals(film.getName())) {
             return false;
         }
         if (getDescription() != null ? !getDescription().equals(film.getDescription()) : film.getDescription() != null) {
             return false;
         }
-        return getReleaseDate().equals(film.getReleaseDate());
+        if (!getReleaseDate().equals(film.getReleaseDate())) {
+            return false;
+        }
+        return getMpa().equals(film.getMpa());
     }
 
     @Override
@@ -74,7 +71,7 @@ public class Film {
         result = 31 * result + getReleaseDate().hashCode();
         result = 31 * result + getDuration();
         result = 31 * result + getGenreId();
-        result = 31 * result + getMpaRaring();
+        result = 31 * result + getMpa().hashCode();
         return result;
     }
 }
