@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exceptions.MpaNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
@@ -37,10 +38,11 @@ public class FilmService {
         List<Film> films = filmStorage.getFilms();
 
         for (Film film : films) {
-            Mpa mpa = film.getMpa();
+            Mpa mpa = mpaStorage.getMpaById(film.getMpaRaring());
             if (mpa != null) {
-                Mpa newMpa = mpaStorage.getMpaById(mpa.getId());
-                film.setMpa(newMpa);
+                film.setMpa(mpa);
+            } else {
+                throw new MpaNotFoundException("Mpa not found for id: " + film.getMpaRaring());
             }
         }
 
