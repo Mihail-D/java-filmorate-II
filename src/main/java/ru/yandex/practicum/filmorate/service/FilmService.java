@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.storage.GenreStorage;
 import ru.yandex.practicum.filmorate.storage.MpaStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -39,6 +40,11 @@ public class FilmService {
 
         for (Film film : films) {
             Mpa mpa = mpaStorage.getMpaById(film.getMpa().getId());
+
+            if (film.getGenres() == null) {
+                film.setGenres(new ArrayList<>());
+            }
+
             if (mpa != null) {
                 film.setMpa(mpa);
             } else {

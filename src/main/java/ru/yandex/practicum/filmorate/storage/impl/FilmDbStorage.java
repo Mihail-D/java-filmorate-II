@@ -46,7 +46,6 @@ public class FilmDbStorage implements FilmStorage {
             film.setId(id);
             Mpa mpa = mpaStorage.getMpaById(film.getMpa().getId());
             film.setMpa(mpa);
-
             String sql = "INSERT INTO films (film_id, name, description, release_date, duration, mpa_id) VALUES (?, ?, ?, ?, ?, ?)";
             jdbcTemplate.update(sql, film.getId(), film.getName(), film.getDescription(), film.getReleaseDate(),
                     film.getDuration(), film.getMpa().getId()

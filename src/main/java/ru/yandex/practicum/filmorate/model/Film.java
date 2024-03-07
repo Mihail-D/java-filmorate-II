@@ -8,11 +8,14 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Positive;
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
 @Builder
 public class Film {
+
+    private List<Genre> genres;
 
     private long id;
 
