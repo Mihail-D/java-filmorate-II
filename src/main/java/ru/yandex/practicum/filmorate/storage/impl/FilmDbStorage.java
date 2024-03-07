@@ -14,6 +14,7 @@ import ru.yandex.practicum.filmorate.utility.FilmValidator;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -73,7 +74,19 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film getFilmById(long id) {
-        return null;
+        String sql = "SELECT * FROM films WHERE film_id = ?";
+
+        List<Film> films = jdbcTemplate.query(sql, (rs, rowNum) -> mapRowToFilm(rs), id);
+        if (films.isEmpty()) {
+            throw new FilmNotExistException("Film not found");
+        }
+        Film film = films.get(0);
+
+        if (film.getGenres() == null) {
+            film.setGenres(new ArrayList<>());
+        }
+
+        return film;
     }
 
     private Film mapRowToFilm(ResultSet rs) throws SQLException {

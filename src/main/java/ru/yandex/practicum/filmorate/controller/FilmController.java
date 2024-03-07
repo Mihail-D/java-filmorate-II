@@ -38,10 +38,10 @@ public class FilmController {
         return filmService.updateFilm(film);
     }
 
-/*    @GetMapping("/{id}")
+    @GetMapping("/{id}")
     public Film getFilmById(@PathVariable long id) {
         return filmService.getFilmById(id);
-    }*/
+    }
 
 /*    @PutMapping("/{id}/like/{userId}")
     public Film addLike(@PathVariable long id, @PathVariable long userId) {

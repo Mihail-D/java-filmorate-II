@@ -31,9 +31,10 @@ public class FilmService {
         this.genreStorage = genreStorage;
     }
 
-    /*    public Film getFilmById(long id) {
+        public Film getFilmById(long id) {
+
         return filmStorage.getFilmById(id);
-    }*/
+    }
 
     public List<Film> getFilms() {
         List<Film> films = filmStorage.getFilms();
