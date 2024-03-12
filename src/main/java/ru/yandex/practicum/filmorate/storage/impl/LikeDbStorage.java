@@ -36,4 +36,11 @@ public class LikeDbStorage implements LikeStorage {
             jdbcTemplate.update(deleteQuery, filmId, userId);
         }
     }
+
+    @Override
+    public int getLikesCount(long filmId) {
+        String sql = "SELECT COUNT(*) FROM likes WHERE film_id = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> rs.getInt(1), filmId);
+        return count != null ? count : 0;
+    }
 }

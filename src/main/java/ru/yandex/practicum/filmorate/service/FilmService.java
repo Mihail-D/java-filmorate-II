@@ -10,7 +10,9 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.*;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -83,14 +85,14 @@ public class FilmService {
         return film;
     }
 
-/*    public List<Film> getPopularFilms(int count) {
+    public List<Film> getPopularFilms(int count) {
         List<Film> films = getFilms();
-        films.sort(Comparator.comparingInt((Film film) -> film.getLikes().size()).reversed());
+        films.sort(Comparator.comparingInt((Film film) -> likeStorage.getLikesCount(film.getId())).reversed());
 
         if (count < 0) {
             count = 10;
         }
 
         return films.stream().limit(count).collect(Collectors.toList());
-    }*/
+    }
 }

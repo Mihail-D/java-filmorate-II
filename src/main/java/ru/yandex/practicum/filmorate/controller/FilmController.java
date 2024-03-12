@@ -53,11 +53,11 @@ public class FilmController {
         return filmService.deleteLike(id, userId);
     }
 
-/*    @GetMapping("/popular")
+    @GetMapping("/popular")
     public List<Film> getPopularFilms(@RequestParam(required = false) Integer count) {
         if (count == null) {
             count = -1;
         }
         return filmService.getPopularFilms(count);
-    }*/
+    }
 }
