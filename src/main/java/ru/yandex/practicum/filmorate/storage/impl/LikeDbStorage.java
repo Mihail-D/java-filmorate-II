@@ -25,4 +25,15 @@ public class LikeDbStorage implements LikeStorage {
             jdbcTemplate.update(insertQuery, filmId, userId);
         }
     }
+
+    @Override
+    public void deleteLike(long filmId, long userId) {
+        String checkQuery = "SELECT * FROM likes WHERE film_id = ? AND user_id = ?";
+        Boolean exists = jdbcTemplate.query(checkQuery, resultSet -> resultSet.next() ? true : false, filmId, userId);
+
+        if (Boolean.TRUE.equals(exists)) {
+            String deleteQuery = "DELETE FROM likes WHERE film_id = ? AND user_id = ?";
+            jdbcTemplate.update(deleteQuery, filmId, userId);
+        }
+    }
 }

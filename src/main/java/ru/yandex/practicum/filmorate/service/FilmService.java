@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.MpaNotFoundException;
-import ru.yandex.practicum.filmorate.exceptions.UserNotExistException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
@@ -12,7 +11,6 @@ import ru.yandex.practicum.filmorate.storage.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Slf4j
 @Service
@@ -77,15 +75,10 @@ public class FilmService {
     public Film deleteLike(long filmId, long userId) {
         Film film = getFilmById(filmId);
         User user = userStorage.getUserById(userId);
-        Set<Long> filmLikes = film.getLikes();
 
-        if (user != null) {
-            filmLikes.removeIf(i -> i == userId);
-        } else {
-            throw new UserNotExistException("User not found");
+        if (film != null && user != null) {
+            likeStorage.deleteLike(filmId, userId);
         }
-
-        filmStorage.updateFilm(film);
 
         return film;
     }
