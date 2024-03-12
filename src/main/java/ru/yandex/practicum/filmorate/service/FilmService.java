@@ -4,15 +4,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.MpaNotFoundException;
+import ru.yandex.practicum.filmorate.exceptions.UserNotExistException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.GenreStorage;
-import ru.yandex.practicum.filmorate.storage.MpaStorage;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -22,16 +22,18 @@ public class FilmService {
     UserStorage userStorage;
     MpaStorage mpaStorage;
     GenreStorage genreStorage;
+    LikeStorage likeStorage;
 
     @Autowired
-    public FilmService(FilmStorage filmStorage, UserStorage userStorage, MpaStorage mpaStorage, GenreStorage genreStorage) {
+    public FilmService(FilmStorage filmStorage, UserStorage userStorage, MpaStorage mpaStorage, GenreStorage genreStorage, LikeStorage likeStorage) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
         this.mpaStorage = mpaStorage;
         this.genreStorage = genreStorage;
+        this.likeStorage = likeStorage;
     }
 
-        public Film getFilmById(long id) {
+    public Film getFilmById(long id) {
 
         return filmStorage.getFilmById(id);
     }
@@ -64,19 +66,15 @@ public class FilmService {
         return filmStorage.updateFilm(film);
     }
 
-/*   public Film addLike(long filmId, long userId) {
+    public Film addLike(long filmId, long userId) {
         Film film = getFilmById(filmId);
-        User user = userStorage.getUserById(userId);
-        Set<Long> filmLikes = film.getLikes();
 
-        filmLikes.add(user.getId());
-
-        filmStorage.updateFilm(film);
+        likeStorage.addLike(filmId, userId);
 
         return film;
-    }*/
+    }
 
-/*    public Film deleteLike(long filmId, long userId) {
+    public Film deleteLike(long filmId, long userId) {
         Film film = getFilmById(filmId);
         User user = userStorage.getUserById(userId);
         Set<Long> filmLikes = film.getLikes();
@@ -90,7 +88,7 @@ public class FilmService {
         filmStorage.updateFilm(film);
 
         return film;
-    }*/
+    }
 
 /*    public List<Film> getPopularFilms(int count) {
         List<Film> films = getFilms();
