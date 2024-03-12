@@ -27,16 +27,11 @@ public class Genre {
 
         Genre genre = (Genre) o;
 
-        if (getId() != genre.getId()) {
-            return false;
-        }
-        return getName().equals(genre.getName());
+        return getId() == genre.getId();
     }
 
     @Override
     public int hashCode() {
-        int result = getId();
-        result = 31 * result + getName().hashCode();
-        return result;
+        return getId();
     }
 }

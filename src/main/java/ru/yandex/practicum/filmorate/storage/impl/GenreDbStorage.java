@@ -15,6 +15,7 @@ import java.util.List;
 @Slf4j
 @Component
 public class GenreDbStorage implements GenreStorage {
+
     JdbcTemplate jdbcTemplate;
 
     @Autowired
@@ -38,6 +39,21 @@ public class GenreDbStorage implements GenreStorage {
         String sql = "SELECT * FROM genre ORDER BY genre_id";
 
         return jdbcTemplate.query(sql, (rs, rowNum) -> mapRowToGenre(rs));
+    }
+
+    @Override
+    public List<Genre> getGenresByFilmId(long filmId) {
+        String sql = "SELECT g.* FROM genre g INNER JOIN film_genre fg ON g.genre_id = fg.genre_id WHERE fg.film_id = ?";
+
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            int id = rs.getInt("genre_id");
+            String name = rs.getString("name");
+
+            return Genre.builder()
+                    .id(id)
+                    .name(name)
+                    .build();
+        }, filmId);
     }
 
     private Genre mapRowToGenre(ResultSet rs) throws SQLException {
