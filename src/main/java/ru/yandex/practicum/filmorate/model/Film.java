@@ -30,9 +30,5 @@ public class Film {
     @Positive
     private int duration;
 
-    private Genre genre;
-
     private Mpa mpa;
-
-
 }

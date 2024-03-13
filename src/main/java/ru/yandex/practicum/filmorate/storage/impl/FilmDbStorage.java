@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.FilmNotExistException;
 import ru.yandex.practicum.filmorate.exceptions.GenreNotFoundException;
+import ru.yandex.practicum.filmorate.exceptions.InputDataErrorException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -55,8 +56,12 @@ public class FilmDbStorage implements FilmStorage {
         if (filmValidator.validateFilm(film)) {
             id++;
             film.setId(id);
-            Mpa mpa = mpaStorage.getMpaById(film.getMpa().getId());
-            film.setMpa(mpa);
+            try {
+                Mpa mpa = mpaStorage.getMpaById(film.getMpa().getId());
+                film.setMpa(mpa);
+            } catch (Exception e) {
+                throw new InputDataErrorException("There is no such MPA rating.");
+            }
             String sql = "INSERT INTO films (film_id, name, description, release_date, duration, mpa_id) VALUES (?, ?, ?, ?, ?, ?)";
             jdbcTemplate.update(sql, film.getId(), film.getName(), film.getDescription(), film.getReleaseDate(),
                     film.getDuration(), film.getMpa().getId()
@@ -91,8 +96,7 @@ public class FilmDbStorage implements FilmStorage {
             List<Genre> updatedGenres = getGenresByFilmId(film.getId());
             film.setGenres(updatedGenres);
 
-            Film updatedFilm = getFilmById(film.getId());
-            return updatedFilm;
+            return getFilmById(film.getId());
         }
     }
 
@@ -131,7 +135,7 @@ public class FilmDbStorage implements FilmStorage {
         }
 
         for (Genre genre : uniqueGenres) {
-            Genre dbGenre = null;
+            Genre dbGenre;
             try {
                 dbGenre = genreDbStorage.getGenreById(genre.getId());
             } catch (GenreNotFoundException e) {
