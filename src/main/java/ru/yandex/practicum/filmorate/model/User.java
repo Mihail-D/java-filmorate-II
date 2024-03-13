@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,27 +8,26 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Past;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
 @Getter
 @Setter
+@Builder
 public class User {
 
-    private Set<Long> friends = new HashSet<>();
+    @NotBlank
     private long id;
 
     @Email
-    String email;
+    private String email;
 
     @NotBlank
-    String login;
+    private String login;
 
     @NotBlank
-    String name;
+    private String name;
 
     @Past
-    LocalDate birthday;
+    private LocalDate birthday;
 
     @Override
     public boolean equals(Object o) {
@@ -41,9 +41,6 @@ public class User {
         User user = (User) o;
 
         if (getId() != user.getId()) {
-            return false;
-        }
-        if (getFriends() != null ? !getFriends().equals(user.getFriends()) : user.getFriends() != null) {
             return false;
         }
         if (!getEmail().equals(user.getEmail())) {
@@ -60,8 +57,7 @@ public class User {
 
     @Override
     public int hashCode() {
-        int result = getFriends() != null ? getFriends().hashCode() : 0;
-        result = 31 * result + (int) (getId() ^ (getId() >>> 32));
+        int result = (int) (getId() ^ (getId() >>> 32));
         result = 31 * result + getEmail().hashCode();
         result = 31 * result + getLogin().hashCode();
         result = 31 * result + getName().hashCode();

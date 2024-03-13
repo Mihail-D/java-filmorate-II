@@ -3,15 +3,17 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exceptions.UserNotExistException;
+import ru.yandex.practicum.filmorate.exceptions.MpaNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.*;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -20,19 +22,43 @@ public class FilmService {
 
     FilmStorage filmStorage;
     UserStorage userStorage;
+    MpaStorage mpaStorage;
+    GenreStorage genreStorage;
+    LikeStorage likeStorage;
 
     @Autowired
-    public FilmService(FilmStorage filmStorage, UserStorage userStorage) {
+    public FilmService(FilmStorage filmStorage, UserStorage userStorage, MpaStorage mpaStorage, GenreStorage genreStorage, LikeStorage likeStorage) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
+        this.mpaStorage = mpaStorage;
+        this.genreStorage = genreStorage;
+        this.likeStorage = likeStorage;
     }
 
     public Film getFilmById(long id) {
+
         return filmStorage.getFilmById(id);
     }
 
     public List<Film> getFilms() {
-        return filmStorage.getFilms();
+        List<Film> films = filmStorage.getFilms();
+
+        films.sort(Comparator.comparing(Film::getId));
+
+        for (Film film : films) {
+            Mpa mpa = mpaStorage.getMpaById(film.getMpa().getId());
+            List<Genre> genres = genreStorage.getGenresByFilmId(film.getId());
+
+            film.setGenres(Objects.requireNonNullElseGet(genres, ArrayList::new));
+
+            if (mpa != null) {
+                film.setMpa(mpa);
+            } else {
+                throw new MpaNotFoundException("Mpa not found for id: " + film.getMpa().getId());
+            }
+        }
+
+        return films;
     }
 
     public Film createFilm(Film film) {
@@ -45,12 +71,8 @@ public class FilmService {
 
     public Film addLike(long filmId, long userId) {
         Film film = getFilmById(filmId);
-        User user = userStorage.getUserById(userId);
-        Set<Long> filmLikes = film.getLikes();
 
-        filmLikes.add(user.getId());
-
-        filmStorage.updateFilm(film);
+        likeStorage.addLike(filmId, userId);
 
         return film;
     }
@@ -58,22 +80,17 @@ public class FilmService {
     public Film deleteLike(long filmId, long userId) {
         Film film = getFilmById(filmId);
         User user = userStorage.getUserById(userId);
-        Set<Long> filmLikes = film.getLikes();
 
-        if (user != null) {
-            filmLikes.removeIf(i -> i == userId);
-        } else {
-            throw new UserNotExistException("User not found");
+        if (film != null && user != null) {
+            likeStorage.deleteLike(filmId, userId);
         }
-
-        filmStorage.updateFilm(film);
 
         return film;
     }
 
     public List<Film> getPopularFilms(int count) {
         List<Film> films = getFilms();
-        films.sort(Comparator.comparingInt((Film film) -> film.getLikes().size()).reversed());
+        films.sort(Comparator.comparingInt((Film film) -> likeStorage.getLikesCount(film.getId())).reversed());
 
         if (count < 0) {
             count = 10;

@@ -15,4 +15,6 @@ public interface FilmStorage {
     Film updateFilm(Film film);
 
     Film getFilmById(long id);
+
+    void addFilmGenres(Film film);
 }
